@@ -72,7 +72,7 @@ try:
     with open(STATE_FILE, "r") as f:
         s = json.load(f)
 except Exception:
-    s = {"initialized": False, "ath": 0.0, "baseline_price": 0.0, "last_price": 0.0}
+        s = {"initialized": False, "ath": 0.0, "baseline_price": 0.0, "last_price": 0.0}
 
 p = price()
 if not s["initialized"]:
