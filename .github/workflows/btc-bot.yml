@@ -39,20 +39,20 @@ jobs:
           import os, json, requests, sys
           from datetime import datetime, timezone
 
-WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
-COINGECKO_SIMPLE = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
-COINGECKO_ATH = ("https://api.coingecko.com/api/v3/coins/bitcoin"
+          WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
+          COINGECKO_SIMPLE = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+          COINGECKO_ATH = ("https://api.coingecko.com/api/v3/coins/bitcoin"
                  "?localization=false&tickers=false&market_data=true"
                  "&community_data=false&developer_data=false&sparkline=false")
-STATE_FILE = ".github/state/btc_state.json"
-BANDS = [5, 10]
+          STATE_FILE = ".github/state/btc_state.json"
+          BANDS = [5, 10]
 
 def now_iso():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 def send(msg):
     r = requests.post(WEBHOOK_URL, json={"content": msg}, timeout=10)
-    r.raise_for_status()
+        r.raise_for_status()
 
 def price():
     r = requests.get(COINGECKO_SIMPLE, timeout=10)
