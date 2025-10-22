@@ -36,8 +36,8 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           python - <<'PY'
-import os, json, requests, sys
-from datetime import datetime, timezone
+          import os, json, requests, sys
+          from datetime import datetime, timezone
 
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 COINGECKO_SIMPLE = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
