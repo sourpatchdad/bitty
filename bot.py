@@ -105,7 +105,7 @@ if s["daily_baseline"] > 0:
     if crossed is not None:
         direction = "up" if pct > 0 else "down"
         emoji = "📈" if pct > 0 else "📉"
-        send(f"{emoji} **Bitcoin is {direction} {abs(pct):.1f}% TODAY (band {crossed}%)**\n"
+        send(f"{emoji} **Bitcoin is {direction} {abs(pct):.1f}% today**\n"
              f"Current: **{fmt(p)}**\n"
              f"All-Time High: *{fmt(s['ath'])}*")
 
