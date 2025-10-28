@@ -140,7 +140,7 @@ if s.get("daily_baseline_date") != today:
 # Check for new ATH
 if p > s["ath"] * 1.0000005:
     s["ath"] = p
-    send(f"🚀 NEW ATH: {fmt(p)} at {now_iso()}")
+    send(f"🚀 New All-Time High: {fmt(p)} at {now_iso()}")
 
 # Check for daily band movements with spam prevention
 if s["daily_baseline"] > 0:
@@ -151,7 +151,7 @@ if s["daily_baseline"] > 0:
     if crossed is not None and crossed not in s.get("triggered_bands", []):
         direction = "up" if pct > 0 else "down"
         emoji = "📈" if pct > 0 else "📉"
-        send(f"{emoji} **Bitcoin is {direction} {abs(pct):.1f}% today**\n"
+        send(f"{emoji} **Bitcoin is {direction} {abs(pct):.1f}% today.**\n"
              f"Current: **{fmt(p)}**\n"
              f"All-Time High: *{fmt(s['ath'])}*")
 
