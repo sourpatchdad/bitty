@@ -167,7 +167,7 @@ if now.weekday() == 6 and now.hour == 0 and s.get("last_weekly_summary") != toda
     if data is not None:
         ath_delta = ((p - s['ath']) / s['ath'] * 100) if s['ath'] > 0 else 0
 
-        send(f"📊 **Weekly Summary**\n"
+        send(f"**Weekly Summary**\n"
              f"*{now.strftime('%A, %B %d, %Y %I:%M%p')}*\n\n"
              f"BTC Price: **{fmt(p)}**\n"
              f"ATH: **{fmt(s['ath'])}**\n"
@@ -188,7 +188,7 @@ if now.day == 1 and now.hour == 0 and s.get("last_monthly_summary") != today:
         from datetime import timedelta
         prev_month = (now.replace(day=1) - timedelta(days=1)).strftime('%B')
 
-        msg = f"📅 **Monthly Summary**\n*{now.strftime('%A, %B %d, %Y %I:%M%p')}*\n\n"
+        msg = f"**Monthly Summary**\n*{now.strftime('%A, %B %d, %Y %I:%M%p')}*\n\n"
         msg += f"{prev_month} EOM Price: **{fmt(p)}**\n"
 
         # Add MoM calculation if we have previous month's price
