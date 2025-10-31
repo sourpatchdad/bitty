@@ -179,31 +179,27 @@ if now.weekday() == 6 and now.hour == 0 and s.get("last_weekly_summary") != toda
     else:
         print("Skipping weekly summary due to market data API failure")
 
-# Monthly summary - Last day of month at midnight CST/CDT
-def is_last_day_of_month(dt):
-    """Check if date is the last day of its month"""
-    next_day = dt.replace(hour=0, minute=0, second=0, microsecond=0)
-    from datetime import timedelta
-    next_day = next_day + timedelta(days=1)
-    return next_day.month != dt.month
-
-if is_last_day_of_month(now) and now.hour == 0 and s.get("last_monthly_summary") != today:
+# Monthly summary - First day of month at midnight CST/CDT
+if now.day == 1 and now.hour == 0 and s.get("last_monthly_summary") != today:
     data = market_data()
 
     if data is not None:
-        current_month = now.strftime('%B')
+        # Get previous month name
+        from datetime import timedelta
+        prev_month = (now.replace(day=1) - timedelta(days=1)).strftime('%B')
+
         msg = f"📅 **Monthly Summary**\n*{now.strftime('%A, %B %d, %Y %I:%M%p')}*\n\n"
-        msg += f"{current_month} EOM Price: **{fmt(p)}**\n"
+        msg += f"{prev_month} EOM Price: **{fmt(p)}**\n"
 
         # Add MoM calculation if we have previous month's price
         if s.get("prev_month_eom_price") is not None and s["prev_month_eom_price"] > 0:
             mom_pct = ((p - s["prev_month_eom_price"]) / s["prev_month_eom_price"] * 100)
 
-            # Get previous month name
-            from datetime import timedelta
-            prev_month = (now.replace(day=1) - timedelta(days=1)).strftime('%B')
+            # Get the month before previous month
+            two_months_ago = (now.replace(day=1) - timedelta(days=32)).replace(day=1)
+            prev_prev_month = (two_months_ago - timedelta(days=1)).strftime('%B')
 
-            msg += f"{prev_month} EOM Price: **{fmt(s['prev_month_eom_price'])}**\n"
+            msg += f"{prev_prev_month} EOM Price: **{fmt(s['prev_month_eom_price'])}**\n"
             msg += f"MoM Δ: **{fmt_pct(mom_pct)}**\n"
 
         msg += f"\nCirculating Supply: **{data['circulating_supply']:,.0f}**\n"
