@@ -1,11 +1,11 @@
 {
   "initialized": true,
   "ath": 126080.0,
-  "daily_baseline": 109920.0,
-  "daily_baseline_date": "2025-10-31",
+  "daily_baseline": 110032.0,
+  "daily_baseline_date": "2025-11-01",
   "triggered_bands": [],
-  "last_price": 110240.0,
+  "last_price": 110032.0,
   "last_weekly_summary": null,
-  "last_monthly_summary": "2025-10-31",
-  "prev_month_eom_price": 109920.0
+  "last_monthly_summary": "2025-11-01",
+  "prev_month_eom_price": 110032.0
 }
