@@ -140,7 +140,7 @@ if s.get("daily_baseline_date") != today:
 # Check for new ATH
 if p > s["ath"] * 1.0000005:
     s["ath"] = p
-    send(f"🚀 New All-Time High: {fmt(p)} at {now_iso()}")
+    send(f"🚀 **New All-Time High: {fmt(p)}**\n*{now.strftime('%A, %B %d, %Y %I:%M%p')}*")
 
 # Check for daily band movements with spam prevention
 if s["daily_baseline"] > 0:
