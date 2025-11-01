@@ -184,20 +184,21 @@ if now.day == 1 and now.hour == 0 and s.get("last_monthly_summary") != today:
     data = market_data()
 
     if data is not None:
-        # Get previous month name
+        # Get previous month name (the month that just ended)
         from datetime import timedelta
         prev_month = (now.replace(day=1) - timedelta(days=1)).strftime('%B')
 
         msg = f"**Monthly Summary**\n*{now.strftime('%A, %B %d, %Y %I:%M%p')}*\n\n"
         msg += f"{prev_month} EOM Price: **{fmt(p)}**\n"
 
-        # Add MoM calculation if we have previous month's price
+        # Add MoM comparison if we have previous month's stored price
         if s.get("prev_month_eom_price") is not None and s["prev_month_eom_price"] > 0:
             mom_pct = ((p - s["prev_month_eom_price"]) / s["prev_month_eom_price"] * 100)
 
-            # Get the month before previous month
-            two_months_ago = (now.replace(day=1) - timedelta(days=32)).replace(day=1)
-            prev_prev_month = (two_months_ago - timedelta(days=1)).strftime('%B')
+            # Get the name of the month before the previous month
+            # On Dec 1: prev_month is "November", so we want "October"
+            prev_prev_month_date = (now.replace(day=1) - timedelta(days=1)).replace(day=1) - timedelta(days=1)
+            prev_prev_month = prev_prev_month_date.strftime('%B')
 
             msg += f"{prev_prev_month} EOM Price: **{fmt(s['prev_month_eom_price'])}**\n"
             msg += f"MoM Δ: **{fmt_pct(mom_pct)}**\n"
@@ -207,7 +208,7 @@ if now.day == 1 and now.hour == 0 and s.get("last_monthly_summary") != today:
 
         send(msg)
 
-        # Store this month's EOM price for next month's comparison
+        # Store current price for next month's comparison
         s["prev_month_eom_price"] = p
         s["last_monthly_summary"] = today
     else:
