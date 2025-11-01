@@ -98,8 +98,7 @@ except Exception:
         "triggered_bands": [],
         "last_price": 0.0,
         "last_weekly_summary": None,
-        "last_monthly_summary": None,
-        "prev_month_eom_price": None
+        "last_monthly_summary": None
     }
 
 # Get current price and market data
@@ -122,8 +121,7 @@ if not s["initialized"]:
         "triggered_bands": [],
         "last_price": p,
         "last_weekly_summary": None,
-        "last_monthly_summary": None,
-        "prev_month_eom_price": None
+        "last_monthly_summary": None
     })
     os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
     with open(STATE_FILE, "w") as f:
@@ -189,27 +187,12 @@ if now.day == 1 and now.hour == 0 and s.get("last_monthly_summary") != today:
         prev_month = (now.replace(day=1) - timedelta(days=1)).strftime('%B')
 
         msg = f"📅 **Monthly Summary**\n*{now.strftime('%A, %B %d, %Y %I:%M%p')}*\n\n"
-        msg += f"{prev_month} EOM Price: **{fmt(p)}**\n"
-
-        # Add MoM calculation if we have previous month's price
-        if s.get("prev_month_eom_price") is not None and s["prev_month_eom_price"] > 0:
-            mom_pct = ((p - s["prev_month_eom_price"]) / s["prev_month_eom_price"] * 100)
-
-            # Get the month that prev_month_eom_price represents (two months back from current)
-            # On Nov 1st: now -> Nov 1 -> Oct 31 -> Oct 1 -> Sept 30 -> "September"
-            prev_month_date = now.replace(day=1) - timedelta(days=1)  # Last day of previous month
-            prev_prev_month = (prev_month_date.replace(day=1) - timedelta(days=1)).strftime('%B')
-
-            msg += f"{prev_prev_month} EOM Price: **{fmt(s['prev_month_eom_price'])}**\n"
-            msg += f"MoM Δ: **{fmt_pct(mom_pct)}**\n"
-
-        msg += f"\nCirculating Supply: **{data['circulating_supply']:,.0f}**\n"
+        msg += f"{prev_month} EOM Price: **{fmt(p)}**\n\n"
+        msg += f"Circulating Supply: **{data['circulating_supply']:,.0f}**\n"
         msg += f"Market Cap: **{fmt(data['market_cap'])}**"
 
         send(msg)
 
-        # Store this month's EOM price for next month's comparison
-        s["prev_month_eom_price"] = p
         s["last_monthly_summary"] = today
     else:
         print("Skipping monthly summary due to market data API failure")
