@@ -1,4 +1,4 @@
-# Bitty BTC Bot 🚀
+# Bitty 2.0 
  
 A lightweight Bitcoin price monitoring bot that sends Discord notifications for significant price movements, all-time highs, and regular market summaries. Runs automatically via GitHub Actions every 5 minutes.
  
