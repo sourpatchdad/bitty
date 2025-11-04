@@ -10,8 +10,8 @@ COINGECKO_FULL = ("https://api.coingecko.com/api/v3/coins/bitcoin"
 STATE_FILE = ".github/state/btc_state.json"
 BANDS = [5, 10, 15]
 TZ = ZoneInfo("America/Chicago")  # CST/CDT
-MAX_RETRIES = 3
-RETRY_DELAYS = [2, 4, 8]  # exponential backoff in seconds
+MAX_RETRIES = 4
+RETRY_DELAYS = [3, 6, 12, 24]  # exponential backoff in seconds
 
 def now_utc():
     return datetime.now(timezone.utc)
@@ -36,7 +36,7 @@ def retry_request(func, *args, **kwargs):
 def send(msg):
     """Send Discord notification with retry logic"""
     def _send():
-        r = requests.post(WEBHOOK_URL, json={"content": msg}, timeout=10)
+        r = requests.post(WEBHOOK_URL, json={"content": msg}, timeout=20)
         r.raise_for_status()
 
     try:
@@ -47,7 +47,7 @@ def send(msg):
 def price():
     """Fetch current BTC price with retry logic"""
     def _fetch():
-        r = requests.get(COINGECKO_SIMPLE, timeout=10)
+        r = requests.get(COINGECKO_SIMPLE, timeout=30)
         r.raise_for_status()
         return float(r.json()["bitcoin"]["usd"])
 
@@ -61,7 +61,7 @@ def price():
 def market_data():
     """Fetch full market data from CoinGecko with retry logic"""
     def _fetch():
-        r = requests.get(COINGECKO_FULL, timeout=20)
+        r = requests.get(COINGECKO_FULL, timeout=45)
         r.raise_for_status()
         data = r.json().get("market_data", {})
         return {
