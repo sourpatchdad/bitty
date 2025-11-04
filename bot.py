@@ -54,8 +54,7 @@ def price():
     try:
         return retry_request(_fetch)
     except Exception as e:
-        print(f"Failed to fetch price after {MAX_RETRIES} attempts: {e}")
-        send(f"⚠️ Error fetching BTC price: {str(e)}")
+        print(f"ERROR: Failed to fetch price after {MAX_RETRIES} attempts: {e}")
         sys.exit(1)
 
 def market_data():

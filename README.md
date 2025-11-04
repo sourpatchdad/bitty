@@ -139,14 +139,6 @@ Market Cap: **$2,305,127,950,000**
 - Includes Bitcoin supply and market cap metrics
 - First month won't show MoM (no previous data)
 
-### ⚠️ Error Alerts
-
-Sent if API calls fail after all retry attempts.
-
-```
-⚠️ Error fetching BTC price: HTTPError('429 Too Many Requests')
-```
-
 ## Configuration
 
 All settings in `bot.py`:
@@ -290,6 +282,7 @@ TZ = ZoneInfo("UTC")  # Or any timezone where it's currently midnight/Sunday
 - Check Actions tab logs for specific error
 - Common: CoinGecko rate limiting (will auto-retry)
 - Verify repo has write permissions for Actions
+- **Note:** Errors are logged to GitHub Actions only (not sent to Discord)
 
 **Bot not triggering at expected times:**
 - Remember: All times are CST/CDT (America/Chicago)
