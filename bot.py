@@ -2,7 +2,13 @@ import os, json, requests, sys, time
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
+WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
+if not WEBHOOK_URL:
+    print("ERROR: DISCORD_WEBHOOK_URL environment variable not set")
+    sys.exit(1)
+
+DEBUG_MODE = os.environ.get("DEBUG_MODE", "").lower() in ("true", "1", "yes")
+
 COINGECKO_SIMPLE = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
 COINGECKO_FULL = ("https://api.coingecko.com/api/v3/coins/bitcoin"
                   "?localization=false&tickers=false&market_data=true"
@@ -41,8 +47,12 @@ def send(msg):
 
     try:
         retry_request(_send)
+        print(f"✓ Notification sent successfully")
     except Exception as e:
-        print(f"Failed to send Discord notification after {MAX_RETRIES} attempts: {e}")
+        error_msg = f"Failed to send Discord notification after {MAX_RETRIES} attempts: {e}"
+        print(f"ERROR: {error_msg}")
+        # Exit with error so GitHub Actions shows the failure
+        sys.exit(1)
 
 def price():
     """Fetch current BTC price with retry logic"""
@@ -105,6 +115,13 @@ except Exception:
 p = price()
 now = now_cst()
 today = now.date().isoformat()
+
+# Debug mode - send heartbeat notification to verify webhook is working
+if DEBUG_MODE:
+    send(f"🔧 **Debug Mode Heartbeat**\n"
+         f"Bot is running at {now_iso()}\n"
+         f"Current BTC Price: {fmt(p)}")
+    print("Debug mode heartbeat sent")
 
 # Initialize if needed
 if not s["initialized"]:
@@ -218,3 +235,11 @@ s["last_price"] = p
 os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
 with open(STATE_FILE, "w") as f:
     json.dump(s, f, indent=2)
+
+# Log execution summary
+print(f"Bot run completed successfully at {now_iso()}")
+print(f"Price: {fmt(p)} | Daily baseline: {fmt(s['daily_baseline'])}")
+if s["daily_baseline"] > 0:
+    pct = (p - s["daily_baseline"]) / s["daily_baseline"] * 100
+    print(f"Daily movement: {fmt_pct(pct)} (threshold: ±5%)")
+print(f"ATH: {fmt(s['ath'])} | Triggered bands today: {s.get('triggered_bands', [])}")

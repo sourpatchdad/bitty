@@ -3,7 +3,13 @@ name: Bitty BTC Bot
 on:
   schedule:
     - cron: "*/5 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      debug_mode:
+        description: 'Enable debug mode (sends heartbeat notification)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -34,6 +40,7 @@ jobs:
       - name: Run bot
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DEBUG_MODE: ${{ github.event.inputs.debug_mode || 'false' }}
         run: python bot.py
 
       - name: Commit updated state
